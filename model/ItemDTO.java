@@ -6,12 +6,18 @@ public class ItemDTO {
     private String name;
     private double price_excl_vat;
     private double vat_rate;
+    private int stock;
 
-    public ItemDTO(int identifier, String name, double price_excl_vat, double vat_rate){
+    public ItemDTO(int identifier, String name, double price_excl_vat, double vat_rate, int stock) {
         this.identifier = identifier;
         this.name = name;
         this.price_excl_vat = price_excl_vat;
         this.vat_rate = vat_rate;
+        this.stock = stock;
+    }
+
+    public ItemDTO(){
+
     }
 
     public int getIdentifier() {
@@ -44,5 +50,13 @@ public class ItemDTO {
 
     public void setVat_rate(double vat_rate) {
         this.vat_rate = vat_rate;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 }

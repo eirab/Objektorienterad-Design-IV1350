@@ -5,6 +5,7 @@ import java.util.Properties;
 
 public class DBHandler {
 
+
         private Properties properties;
         private final String url = "jdbc:postgresql://localhost:5432/POS";
 
@@ -17,17 +18,18 @@ public class DBHandler {
     }
 
 
-    public void connect() {
+    public Connection connect() {
         try {
-            DriverManager.getConnection(url, properties);
-            System.out.println("Connected to database");
+            return DriverManager.getConnection(url, properties);
 
 
         } catch (SQLException e) {
             e.printStackTrace();
 
         }
+        System.out.println("Connection failed");
 
+        return null;
     }
 
 }
