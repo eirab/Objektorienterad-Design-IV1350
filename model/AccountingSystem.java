@@ -10,4 +10,11 @@ public class AccountingSystem {
     public AccountingSystem(DBHandler dbHandler){
         this.dbHandler = dbHandler;
     }
+
+
+
+
+    private void endSale(){
+
+    }
 }

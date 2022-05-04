@@ -11,53 +11,74 @@ import java.sql.Statement;
 public class Inventory {
     private final String items = "items";
     private final String GET_ITEM_BY_IDENTIFIER = "SELECT* FROM items WHERE identifier = ";
+    private final String CHECK_IDENTIFIER = "SELECT COUNT(*) AS recordCount FROM items WHERE identifier = ";
     private DBHandler dbHandler;
     private ItemDTO itemDTO;
 
 
-    public Inventory(DBHandler dbHandler) {
-        this.dbHandler = dbHandler;
+
+    public Inventory(DBHandler db) {
+        this.dbHandler = db;
+
 
 
     }
 
+   public ItemDTO getItem ( int identifier) throws SQLException {
+        ItemDTO currentItem = getItemDTO(getItemFromDatabase(identifier));
+        return currentItem;
+   }
 
-    public ItemDTO getItem(int itemIdentifier) throws SQLException {
-        String query = GET_ITEM_BY_IDENTIFIER + itemIdentifier;
-        ResultSet result;
+   public boolean identifierExists(int identifier) throws SQLException {
+        ResultSet resultSet = executeQuery(CHECK_IDENTIFIER + identifier);
+        resultSet.next();
+        int count = resultSet.getInt("recordCount");
+        if(count == 0){
+            return false;
+        }else return true;
 
-        try {
-            Connection connection = dbHandler.connect();
-            Statement statement = connection.createStatement();
-            result = statement.executeQuery(query);
-            return createDTO(result);
+   }
+
+   private ResultSet executeQuery(String query) {
+       ResultSet result = null;
+
+       try {
+           Connection connection = dbHandler.connect();
+           Statement statement = connection.createStatement();
+           result = statement.executeQuery(query);
+           connection.close();
+           return result;
+
+       } catch (Exception e) {
+
+       }
+       return result;
+    }
 
 
 
-        } catch (Exception e) {
-
-            throw new RuntimeException(e);
-        }
-
+    private ResultSet getItemFromDatabase(int itemIdentifier)  {
+         return executeQuery( GET_ITEM_BY_IDENTIFIER + itemIdentifier);
 
     }
 
 
-    private ItemDTO createDTO(ResultSet itemRow) throws SQLException {
+    private ItemDTO getItemDTO(ResultSet itemRow) throws SQLException {
         ItemDTO item = new ItemDTO();
         while (itemRow.next()) {
             item.setIdentifier(itemRow.getInt("identifier"));
             item.setName(itemRow.getString("name"));
             item.setPrice_excl_vat(itemRow.getDouble("price_excl_vat"));
             item.setVat_rate(itemRow.getDouble("vat_rate"));
-            item.setStock(itemRow.getInt("stock"));
 
         }
-
+        itemRow.close();
         return item;
 
 
     }
+
+
 
 
 }
